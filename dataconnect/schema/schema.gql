@@ -1,0 +1,22 @@
+type User @table {
+  name: String!
+}
+type Plan @table {
+  title: String!
+}
+
+# A user can enroll in the same plan more than once (re-enrollment),
+# so (user, plan) is not unique and cannot be the primary key.
+type Enrollment @table(key: ["id"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  user: User!
+  plan: Plan!
+  startDate: Date!
+  status: String!
+}
+
+# Other tables reference an enrollment by its id.
+type Session @table {
+  enrollment: Enrollment
+  performedAt: Timestamp!
+}
